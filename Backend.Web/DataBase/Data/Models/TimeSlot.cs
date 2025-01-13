@@ -13,10 +13,10 @@ public class TimeSlot
     public DateTime Date { get; set; }
 
     [Required]
-    public TimeSpan StartTime { get; set; }
+    public string StartTime { get; set; }
 
     [Required]
-    public TimeSpan EndTime { get; set; }
+    public string EndTime { get; set; }
 
     [Required]
     public bool IsReserved { get; set; }

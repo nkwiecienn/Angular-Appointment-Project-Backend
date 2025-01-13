@@ -1,0 +1,12 @@
+﻿public class CreateReservationDto
+{
+    public DateTime Date { get; set; }
+    public string StartTime { get; set; }
+    public string EndTime { get; set; }
+    public int Length { get; set; }
+    public string Type { get; set; }
+    public string Gender { get; set; }
+    public int Age { get; set; }
+    public string? Details { get; set; }
+    public int UserId { get; set; }
+}

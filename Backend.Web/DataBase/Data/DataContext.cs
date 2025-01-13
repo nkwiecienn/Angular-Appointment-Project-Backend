@@ -13,8 +13,6 @@ public class DataContext : DbContext
     public DbSet<Absence> Absences { get; set; } = null!;
     public DbSet<Availability> Availabilities { get; set; } = null!;
     public DbSet<TimeSlot> TimeSlots { get; set; } = null!;
-    public DbSet<WeekSchedule> WeekSchedules { get; set; } = null!;
-    public DbSet<DaySchedule> DaySchedules { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -70,18 +68,5 @@ public class DataContext : DbContext
             .WithMany()
             .HasForeignKey(ts => ts.ReservationId)
             .OnDelete(DeleteBehavior.SetNull);
-
-        // Konfiguracja tabeli WeekSchedule
-        modelBuilder.Entity<WeekSchedule>()
-            .HasMany(ws => ws.Days)
-            .WithOne(ds => ds.WeekSchedule)
-            .HasForeignKey(ds => ds.WeekScheduleId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        // Konfiguracja tabeli DaySchedule
-        modelBuilder.Entity<DaySchedule>()
-            .HasMany(ds => ds.Slots)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

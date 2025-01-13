@@ -13,22 +13,16 @@ public class Reservation
     public DateTime Date { get; set; }
 
     [Required]
-    public TimeSpan StartTime { get; set; }
+    public string StartTime { get; set; }
 
     [Required]
-    public TimeSpan EndTime { get; set; }
+    public string EndTime { get; set; }
 
     [Required]
     public int Length { get; set; }
 
     [Required]
     public required string Type { get; set; } // "konsultacja", "badanie", etc.
-
-    [Required]
-    public required string PatientName { get; set; }
-
-    [Required]
-    public required string PatientSurname { get; set; }
 
     [Required]
     public required string Gender { get; set; } // 'kobieta', 'mężczyzna', `inny`
