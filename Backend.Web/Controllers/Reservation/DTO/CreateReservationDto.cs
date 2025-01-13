@@ -2,7 +2,7 @@
 
 public class CreateReservationDto
 {
-    public DateTime Date { get; set; }
+    public string Date { get; set; }
     public string StartTime { get; set; }
     public string EndTime { get; set; }
     public int Length { get; set; }

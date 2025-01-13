@@ -12,9 +12,9 @@ public class Availability
     [Required]
     public required string Type { get; set; } // "single-day" | "range"
 
-    public DateTime? Day { get; set; }
-    public DateTime? DateFrom { get; set; }
-    public DateTime? DateTo { get; set; }
+    public string? Day { get; set; }
+    public string? DateFrom { get; set; }
+    public string? DateTo { get; set; }
     public string? DaysOfWeek { get; set; } // Przechowywane jako string (np. "1,2,3")
 
     public string? TimeRanges { get; set; } // JSON string do przechowywania zakresów czasowych

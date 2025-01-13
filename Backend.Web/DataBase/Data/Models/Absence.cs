@@ -10,7 +10,7 @@ public class Absence
     public int Id { get; set; }
 
     [Required]
-    public DateTime Day { get; set; }
+    public string Day { get; set; }
 
     // Relacja do użytkownika
     [Required]

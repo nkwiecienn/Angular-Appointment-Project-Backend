@@ -61,6 +61,16 @@ public class TimeSlotController : ControllerBase
 
         return Ok(result);
     }
+    
+    [HttpGet("byDate")]
+    public async Task<ActionResult<IEnumerable<TimeSlotDto>>> GetTimeSlotsByDate([FromQuery] string date)
+    {
+        var timeSlots = await _context.TimeSlots
+            .Where(slot => slot.Date == date)
+            .ToListAsync();
+
+        return Ok(timeSlots);
+    }
 
     // POST: api/TimeSlot
     [HttpPost]
