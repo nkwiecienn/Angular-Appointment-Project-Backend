@@ -7,7 +7,7 @@ public class AvailabilityDto
     public DateTime? Day { get; set; }
     public DateTime? DateFrom { get; set; }
     public DateTime? DateTo { get; set; }
-    public List<int>? DaysOfWeek { get; set; } // np. [1, 2, 3] jako dni tygodnia
+    public List<int>? DaysOfWeek { get; set; } 
     public List<TimeRangeDto> TimeRanges { get; set; } = new();
     public int UserId { get; set; }
     public string UserName { get; set; } = string.Empty;

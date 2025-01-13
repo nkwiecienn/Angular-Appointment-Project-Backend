@@ -1,4 +1,6 @@
-﻿public class ReservationDto
+﻿namespace Backend.DTOs;
+
+public class ReservationDto
 {
     public int Id { get; set; }
     public DateTime Date { get; set; }

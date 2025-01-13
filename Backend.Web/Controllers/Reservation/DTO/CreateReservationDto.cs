@@ -1,4 +1,6 @@
-﻿public class CreateReservationDto
+﻿namespace Backend.DTOs;
+
+public class CreateReservationDto
 {
     public DateTime Date { get; set; }
     public string StartTime { get; set; }

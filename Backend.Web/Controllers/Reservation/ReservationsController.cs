@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.DataBase.Data;
 using Backend.DataBase.Data.Models;
+using Backend.DTOs;
 
 namespace Backend.Controllers;
 
@@ -111,14 +112,7 @@ public class ReservationsController : ControllerBase
         {
             return NotFound();
         }
-
-        reservation.StartTime = updateDto.StartTime;
-        reservation.EndTime = updateDto.EndTime;
-        reservation.Length = updateDto.Length;
-        reservation.Type = updateDto.Type;
-        reservation.Gender = updateDto.Gender;
-        reservation.Age = updateDto.Age;
-        reservation.Details = updateDto.Details;
+        
         reservation.IsCanceled = updateDto.IsCanceled;
         reservation.IsReserved = updateDto.IsReserved;
 
