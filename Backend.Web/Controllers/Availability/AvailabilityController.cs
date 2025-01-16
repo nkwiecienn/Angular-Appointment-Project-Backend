@@ -37,7 +37,7 @@ public class AvailabilityController : ControllerBase
                 DateFrom = a.Type == "range" ? a.DateFrom : null,
                 DateTo = a.Type == "range" ? a.DateTo : null,
                 DaysOfWeek = a.Type == "range" && !string.IsNullOrEmpty(a.DaysOfWeek)
-                    ? a.DaysOfWeek.Split(',').Select(int.Parse).ToList()
+                    ? JsonSerializer.Deserialize<List<int>>(a.DaysOfWeek)
                     : null,
                 TimeRanges = !string.IsNullOrEmpty(a.TimeRanges)
                     ? JsonSerializer.Deserialize<List<TimeRangeDto>>(a.TimeRanges)
@@ -74,7 +74,7 @@ public class AvailabilityController : ControllerBase
             DateFrom = availability.Type == "range" ? availability.DateFrom : null,
             DateTo = availability.Type == "range" ? availability.DateTo : null,
             DaysOfWeek = availability.Type == "range" && !string.IsNullOrEmpty(availability.DaysOfWeek)
-                ? availability.DaysOfWeek.Split(',').Select(int.Parse).ToList()
+                ? JsonSerializer.Deserialize<List<int>>(availability.DaysOfWeek)
                 : null,
             TimeRanges = !string.IsNullOrEmpty(availability.TimeRanges)
                 ? JsonSerializer.Deserialize<List<TimeRangeDto>>(availability.TimeRanges)
@@ -105,11 +105,12 @@ public class AvailabilityController : ControllerBase
             DateFrom = createDto.DateFrom,
             DateTo = createDto.DateTo,
             DaysOfWeek = createDto.DaysOfWeek != null
-                ? string.Join(",", createDto.DaysOfWeek)
+                ? JsonSerializer.Serialize(createDto.DaysOfWeek) // Zapisz jako JSON
                 : null,
             TimeRanges = JsonSerializer.Serialize(createDto.TimeRanges),
             UserId = createDto.UserId
         };
+
 
         _context.Availabilities.Add(availability);
         await _context.SaveChangesAsync();
