@@ -3,11 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Backend.DataBase.Data;
 using Backend.DataBase.Data.Models;
 using Backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+// [Authorize]
 public class ReservationsController : ControllerBase
 {
     private readonly DataContext _context;
@@ -136,4 +138,29 @@ public class ReservationsController : ControllerBase
 
         return NoContent();
     }
+    
+    [HttpPut("reserveAll")]
+    public async Task<IActionResult> ReserveAllPending([FromBody] List<int> reservationIds)
+    {
+        try
+        {
+            var reservations = await _context.Reservations
+                .Where(r => reservationIds.Contains(r.Id))
+                .ToListAsync();
+
+            foreach (var reservation in reservations)
+            {
+                reservation.IsReserved = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
 }

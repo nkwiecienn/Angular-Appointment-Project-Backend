@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Backend.DataBase.Data;
 using Backend.DataBase.Data.Models;
 using Backend.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers;
 
@@ -21,6 +22,7 @@ public class AbsenceController : ControllerBase
 
     // GET: api/Absence
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<AbsenceDto>>> GetAbsences()
     {
         var absences = await _context.Absences
@@ -39,6 +41,7 @@ public class AbsenceController : ControllerBase
 
     // GET: api/Absence/{id}
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<AbsenceDto>> GetAbsence(int id)
     {
         var absence = await _context.Absences
@@ -63,6 +66,7 @@ public class AbsenceController : ControllerBase
 
     // POST: api/Absence
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<AbsenceDto>> CreateAbsence(CreateAbsenceDto createDto)
     {
         // Sprawdź, czy użytkownik istnieje
@@ -94,6 +98,7 @@ public class AbsenceController : ControllerBase
 
     // PUT: api/Absence/{id}
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateAbsence(int id, UpdateAbsenceDto updateDto)
     {
         var absence = await _context.Absences.FindAsync(id);
@@ -135,6 +140,7 @@ public class AbsenceController : ControllerBase
 
     // DELETE: api/Absence/{id}
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteAbsence(int id)
     {
         var absence = await _context.Absences.FindAsync(id);

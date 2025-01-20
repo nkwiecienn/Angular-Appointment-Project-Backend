@@ -76,6 +76,18 @@ public class TimeSlotController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TimeSlot>> CreateTimeSlot(CreateTimeSlotDto createDto)
     {
+        // Sprawdzenie, czy slot już istnieje
+        var existingSlot = await _context.TimeSlots
+            .FirstOrDefaultAsync(slot =>
+                slot.Date == createDto.Date &&
+                slot.StartTime == createDto.StartTime &&
+                slot.EndTime == createDto.EndTime);
+
+        if (existingSlot != null)
+        {
+            return Conflict("Slot already exists.");
+        }
+
         var slot = new TimeSlot
         {
             Date = createDto.Date,
@@ -91,6 +103,7 @@ public class TimeSlotController : ControllerBase
 
         return CreatedAtAction(nameof(GetTimeSlot), new { id = slot.Id }, slot);
     }
+
 
     // PUT: api/TimeSlot/{id}
     [HttpPut("{id}")]
@@ -126,4 +139,56 @@ public class TimeSlotController : ControllerBase
 
         return NoContent();
     }
+    
+    [HttpPut("{id}/reserve")]
+    public async Task<IActionResult> ReserveSlot(int id, [FromBody] int reservationId)
+    {
+        var slot = await _context.TimeSlots.FindAsync(id);
+
+        if (slot == null)
+        {
+            return NotFound("Slot not found.");
+        }
+
+        if (slot.IsReserved)
+        {
+            return Conflict("Slot is already reserved.");
+        }
+
+        var reservation = await _context.Reservations.FindAsync(reservationId);
+
+        if (reservation == null)
+        {
+            return NotFound("Reservation not found.");
+        }
+
+        slot.IsReserved = true;
+        slot.ReservationId = reservationId;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("{id}/release")]
+    public async Task<IActionResult> ReleaseSlot(int id)
+    {
+        var slot = await _context.TimeSlots.FindAsync(id);
+
+        if (slot == null)
+        {
+            return NotFound("Slot not found.");
+        }
+
+        if (!slot.IsReserved)
+        {
+            return BadRequest("Slot is not reserved.");
+        }
+
+        slot.IsReserved = false;
+        slot.ReservationId = null;
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
 }

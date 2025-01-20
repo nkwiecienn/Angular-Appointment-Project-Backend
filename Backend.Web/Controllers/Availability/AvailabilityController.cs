@@ -4,6 +4,7 @@ using Backend.DataBase.Data;
 using Backend.DataBase.Data.Models;
 using Backend.DTOs;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers;
 
@@ -20,6 +21,7 @@ public class AvailabilityController : ControllerBase
 
     // GET: api/Availability
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetAvailabilities()
     {
         var availabilities = await _context.Availabilities
@@ -54,6 +56,7 @@ public class AvailabilityController : ControllerBase
 
     // GET: api/Availability/{id}
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<AvailabilityDto>> GetAvailability(int id)
     {
         var availability = await _context.Availabilities
@@ -90,6 +93,7 @@ public class AvailabilityController : ControllerBase
 
     // POST: api/Availability
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<AvailabilityDto>> CreateAvailability(CreateAvailabilityDto createDto)
     {
         var user = await _context.Users.FindAsync(createDto.UserId);
@@ -133,6 +137,7 @@ public class AvailabilityController : ControllerBase
 
     // PUT: api/Availability/{id}
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> UpdateAvailability(int id, UpdateAvailabilityDto updateDto)
     {
         var availability = await _context.Availabilities.FindAsync(id);
@@ -180,6 +185,7 @@ public class AvailabilityController : ControllerBase
 
     // DELETE: api/Availability/{id}
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteAvailability(int id)
     {
         var availability = await _context.Availabilities.FindAsync(id);
