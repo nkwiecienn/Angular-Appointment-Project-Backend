@@ -86,7 +86,13 @@ public class AuthController : ControllerBase
         return Ok(new
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-            RefreshToken = refreshToken
+            RefreshToken = refreshToken,
+            Role = user.Role,  // Dodajemy rolę do odpowiedzi
+            UserData = new {   // Dodajemy dodatkowe dane użytkownika
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            }
         });
     }
 
