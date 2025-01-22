@@ -162,5 +162,21 @@ public class ReservationsController : ControllerBase
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+    
+    [HttpPut("{id}/cancel")]
+    public async Task<IActionResult> CancelReservation(int id)
+    {
+        var reservation = await _context.Reservations.FindAsync(id);
+        if (reservation == null)
+        {
+            return NotFound("Reservation not found.");
+        }
+
+        reservation.IsCanceled = true;
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
 
 }
