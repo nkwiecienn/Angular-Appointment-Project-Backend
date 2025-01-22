@@ -17,38 +17,95 @@ public class UserController : ControllerBase
     }
 
     // GET: api/User/{id}/Availabilities
+// [HttpGet("{id}/Availabilities")]
+// public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetUserAvailabilities(int id)
+// {
+//     var userExists = await _context.Users.AnyAsync(u => u.Id == id);
+//     if (!userExists)
+//     {
+//         return NotFound();
+//     }
+//
+//     var availabilities = await _context.Availabilities
+//         .Where(a => a.UserId == id)
+//         .Include(a => a.User) // Include the User entity
+//         .ToListAsync();
+//
+//     var result = availabilities.Select(a => new AvailabilityDto
+//     {
+//         Id = a.Id,
+//         Type = a.Type,
+//         Day = a.Type == "single-day" ? a.Day : null,
+//         DateFrom = a.Type == "range" ? a.DateFrom : null,
+//         DateTo = a.Type == "range" ? a.DateTo : null,
+//         DaysOfWeek = a.Type == "range" && !string.IsNullOrEmpty(a.DaysOfWeek)
+//             ? a.DaysOfWeek.Split(',').Select(int.Parse).ToList()
+//             : null,
+//         TimeRanges = !string.IsNullOrEmpty(a.TimeRanges)
+//             ? JsonSerializer.Deserialize<List<TimeRangeDto>>(a.TimeRanges)
+//             : new List<TimeRangeDto>(),
+//         UserId = a.UserId,
+//         UserName = $"{a.User.FirstName} {a.User.LastName}"
+//     });
+//
+//     return Ok(result);
+// }
+
 [HttpGet("{id}/Availabilities")]
 public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetUserAvailabilities(int id)
 {
-    var userExists = await _context.Users.AnyAsync(u => u.Id == id);
-    if (!userExists)
+    try 
     {
-        return NotFound();
+        var userExists = await _context.Users.AnyAsync(u => u.Id == id);
+        if (!userExists)
+        {
+            return NotFound();
+        }
+
+        var availabilities = await _context.Availabilities
+            .Where(a => a.UserId == id)
+            .Include(a => a.User)
+            .ToListAsync();
+
+        var result = availabilities.Select(a => {
+            try 
+            {
+                return new AvailabilityDto
+                {
+                    Id = a.Id,
+                    Type = a.Type,
+                    Day = a.Type == "single-day" ? a.Day : null,
+                    DateFrom = a.Type == "range" ? a.DateFrom : null,
+                    DateTo = a.Type == "range" ? a.DateTo : null,
+                    DaysOfWeek = a.Type == "range" && !string.IsNullOrEmpty(a.DaysOfWeek)
+                        ? JsonSerializer.Deserialize<List<int>>(a.DaysOfWeek)
+                        : null,
+                    TimeRanges = !string.IsNullOrEmpty(a.TimeRanges)
+                        ? JsonSerializer.Deserialize<List<TimeRangeDto>>(a.TimeRanges)
+                            ?? new List<TimeRangeDto>()
+                        : new List<TimeRangeDto>(),
+                    UserId = a.UserId,
+                    UserName = $"{a.User.FirstName} {a.User.LastName}"
+                };
+            }
+            catch (Exception ex)
+            {
+                // Tutaj możesz dodać logowanie błędu
+                Console.WriteLine($"Error processing availability {a.Id}: {ex.Message}");
+                return null;
+            }
+        })
+        .Where(dto => dto != null)
+        .ToList();
+
+        return Ok(result);
     }
-
-    var availabilities = await _context.Availabilities
-        .Where(a => a.UserId == id)
-        .Include(a => a.User) // Include the User entity
-        .ToListAsync();
-
-    var result = availabilities.Select(a => new AvailabilityDto
+    catch (Exception ex)
     {
-        Id = a.Id,
-        Type = a.Type,
-        Day = a.Type == "single-day" ? a.Day : null,
-        DateFrom = a.Type == "range" ? a.DateFrom : null,
-        DateTo = a.Type == "range" ? a.DateTo : null,
-        DaysOfWeek = a.Type == "range" && !string.IsNullOrEmpty(a.DaysOfWeek)
-            ? a.DaysOfWeek.Split(',').Select(int.Parse).ToList()
-            : null,
-        TimeRanges = !string.IsNullOrEmpty(a.TimeRanges)
-            ? JsonSerializer.Deserialize<List<TimeRangeDto>>(a.TimeRanges)
-            : new List<TimeRangeDto>(),
-        UserId = a.UserId,
-        UserName = $"{a.User.FirstName} {a.User.LastName}"
-    });
-
-    return Ok(result);
+        // Tutaj możesz dodać logowanie błędu
+        Console.WriteLine($"Error in GetUserAvailabilities: {ex.Message}");
+        return StatusCode(500, "An error occurred while processing your request.");
+    }
 }
 
 // GET: api/User/{id}/Absences
