@@ -168,4 +168,28 @@ public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations
 
     return Ok(result);
 }
+
+// GET: api/User/role/{role}
+[HttpGet("role/{role}")]
+public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersByRole(int role)
+{
+    var users = await _context.Users
+        .Where(u => u.Role == role)
+        .Select(u => new UserDto
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Role = u.Role
+        })
+        .ToListAsync();
+
+    if (users == null || !users.Any())
+    {
+        return NotFound($"Nie znaleziono użytkowników z rolą {role}.");
+    }
+
+    return Ok(users);
+}
+
 }
