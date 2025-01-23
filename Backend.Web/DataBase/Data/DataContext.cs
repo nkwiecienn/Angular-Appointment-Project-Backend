@@ -47,6 +47,12 @@ public class DataContext : DbContext
             .Property(r => r.Gender)
             .IsRequired()
             .HasMaxLength(10);
+        
+        modelBuilder.Entity<Reservation>()
+            .HasOne(r => r.Doctor)
+            .WithMany()
+            .HasForeignKey(r => r.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Konfiguracja tabeli Availability
         modelBuilder.Entity<Availability>()

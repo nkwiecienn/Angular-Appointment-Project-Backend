@@ -25,6 +25,7 @@ public class ReservationsController : ControllerBase
     {
         var reservations = await _context.Reservations
             .Include(r => r.User)
+            .Include(r => r.Doctor)
             .ToListAsync();
 
         var result = reservations.Select(r => new ReservationDto
@@ -41,7 +42,9 @@ public class ReservationsController : ControllerBase
             IsCanceled = r.IsCanceled,
             IsReserved = r.IsReserved,
             UserId = r.UserId,
-            UserName = $"{r.User.FirstName} {r.User.LastName}"
+            UserName = $"{r.User.FirstName} {r.User.LastName}",
+            DoctorId = r.DoctorId,
+            DoctorName = $"{r.Doctor.FirstName} {r.Doctor.LastName}"
         });
 
         return Ok(result);
@@ -53,6 +56,7 @@ public class ReservationsController : ControllerBase
     {
         var reservation = await _context.Reservations
             .Include(r => r.User)
+            .Include(r => r.Doctor)
             .FirstOrDefaultAsync(r => r.Id == id);
 
         if (reservation == null)
@@ -74,7 +78,9 @@ public class ReservationsController : ControllerBase
             IsCanceled = reservation.IsCanceled,
             IsReserved = reservation.IsReserved,
             UserId = reservation.UserId,
-            UserName = $"{reservation.User.FirstName} {reservation.User.LastName}"
+            UserName = $"{reservation.User.FirstName} {reservation.User.LastName}",
+            DoctorId = reservation.DoctorId,
+            DoctorName = $"{reservation.Doctor.FirstName} {reservation.Doctor.LastName}"
         };
 
         return Ok(result);
@@ -96,7 +102,8 @@ public class ReservationsController : ControllerBase
             Details = createDto.Details,
             IsCanceled = false,
             IsReserved = false,
-            UserId = createDto.UserId
+            UserId = createDto.UserId,
+            DoctorId = createDto.DoctorId
         };
 
         _context.Reservations.Add(reservation);
@@ -178,5 +185,41 @@ public class ReservationsController : ControllerBase
         return NoContent();
     }
 
+    // GET: api/Reservations/doctor/{doctorId}
+    [HttpGet("doctor/{doctorId}")]
+    public async Task<ActionResult<IEnumerable<ReservationDto>>> GetDoctorReservations(int doctorId)
+    {
+        var doctorExists = await _context.Users.AnyAsync(u => u.Id == doctorId);
+        if (!doctorExists)
+        {
+            return NotFound("Nie znaleziono doktora o podanym ID.");
+        }
 
+        var reservations = await _context.Reservations
+            .Include(r => r.User)      // ładuje dane użytkownika
+            .Include(r => r.Doctor)    // ładuje dane doktora
+            .Where(r => r.DoctorId == doctorId)
+            .ToListAsync();
+
+        var result = reservations.Select(r => new ReservationDto
+        {
+            Id = r.Id,
+            Date = r.Date,
+            StartTime = r.StartTime,
+            EndTime = r.EndTime,
+            Length = r.Length,
+            Type = r.Type,
+            Gender = r.Gender,
+            Age = r.Age,
+            Details = r.Details,
+            IsCanceled = r.IsCanceled,
+            IsReserved = r.IsReserved,
+            UserId = r.UserId,
+            UserName = $"{r.User.FirstName} {r.User.LastName}",
+            DoctorId = r.DoctorId,
+            DoctorName = $"{r.Doctor.FirstName} {r.Doctor.LastName}"
+        });
+
+        return Ok(result);
+    }
 }

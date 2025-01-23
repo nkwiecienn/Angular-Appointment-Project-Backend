@@ -16,41 +16,6 @@ public class UserController : ControllerBase
         _context = context;
     }
 
-    // GET: api/User/{id}/Availabilities
-// [HttpGet("{id}/Availabilities")]
-// public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetUserAvailabilities(int id)
-// {
-//     var userExists = await _context.Users.AnyAsync(u => u.Id == id);
-//     if (!userExists)
-//     {
-//         return NotFound();
-//     }
-//
-//     var availabilities = await _context.Availabilities
-//         .Where(a => a.UserId == id)
-//         .Include(a => a.User) // Include the User entity
-//         .ToListAsync();
-//
-//     var result = availabilities.Select(a => new AvailabilityDto
-//     {
-//         Id = a.Id,
-//         Type = a.Type,
-//         Day = a.Type == "single-day" ? a.Day : null,
-//         DateFrom = a.Type == "range" ? a.DateFrom : null,
-//         DateTo = a.Type == "range" ? a.DateTo : null,
-//         DaysOfWeek = a.Type == "range" && !string.IsNullOrEmpty(a.DaysOfWeek)
-//             ? a.DaysOfWeek.Split(',').Select(int.Parse).ToList()
-//             : null,
-//         TimeRanges = !string.IsNullOrEmpty(a.TimeRanges)
-//             ? JsonSerializer.Deserialize<List<TimeRangeDto>>(a.TimeRanges)
-//             : new List<TimeRangeDto>(),
-//         UserId = a.UserId,
-//         UserName = $"{a.User.FirstName} {a.User.LastName}"
-//     });
-//
-//     return Ok(result);
-// }
-
 [HttpGet("{id}/Availabilities")]
 public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetUserAvailabilities(int id)
 {
@@ -147,6 +112,7 @@ public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations
     var reservations = await _context.Reservations
         .Where(r => r.UserId == id)
         .Include(r => r.User) // Include the User entity
+        .Include(r => r.Doctor)
         .ToListAsync();
 
     var result = reservations.Select(r => new ReservationDto
@@ -163,7 +129,9 @@ public async Task<ActionResult<IEnumerable<ReservationDto>>> GetUserReservations
         IsCanceled = r.IsCanceled,
         IsReserved = r.IsReserved,
         UserId = r.UserId,
-        UserName = $"{r.User.FirstName} {r.User.LastName}"
+        UserName = $"{r.User.FirstName} {r.User.LastName}",
+        DoctorId = r.DoctorId,
+        DoctorName = $"{r.Doctor.FirstName} {r.Doctor.LastName}"
     });
 
     return Ok(result);

@@ -43,4 +43,9 @@ public class Reservation
     public int UserId { get; set; }
     [ForeignKey(nameof(UserId))]
     public User User { get; set; } = null!;
+    
+    [Required]
+    public int DoctorId { get; set; }
+    [ForeignKey(nameof(DoctorId))]
+    public User Doctor { get; set; } = null!;
 }

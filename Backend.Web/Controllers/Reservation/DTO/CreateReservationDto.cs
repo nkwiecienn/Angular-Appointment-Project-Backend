@@ -11,4 +11,5 @@ public class CreateReservationDto
     public int Age { get; set; }
     public string? Details { get; set; }
     public int UserId { get; set; }
+    public int DoctorId { get; set; }
 }
