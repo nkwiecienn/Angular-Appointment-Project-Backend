@@ -87,8 +87,8 @@ public class AuthController : ControllerBase
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken),
             RefreshToken = refreshToken,
-            Role = user.Role,  // Dodajemy rolę do odpowiedzi
-            UserData = new {   // Dodajemy dodatkowe dane użytkownika
+            Role = user.Role,  
+            UserData = new {   
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName

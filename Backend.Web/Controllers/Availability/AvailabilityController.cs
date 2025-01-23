@@ -107,7 +107,7 @@ public class AvailabilityController : ControllerBase
             DateFrom = createDto.DateFrom,
             DateTo = createDto.DateTo,
             DaysOfWeek = createDto.DaysOfWeek != null
-                ? JsonSerializer.Serialize(createDto.DaysOfWeek) // Zapisz jako JSON
+                ? JsonSerializer.Serialize(createDto.DaysOfWeek) 
                 : null,
             TimeRanges = JsonSerializer.Serialize(createDto.TimeRanges),
             UserId = createDto.UserId
