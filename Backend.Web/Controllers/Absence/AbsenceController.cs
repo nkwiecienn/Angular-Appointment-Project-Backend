@@ -64,6 +64,38 @@ public class AbsenceController : ControllerBase
         return Ok(absence);
     }
 
+    // // POST: api/Absence
+    // [HttpPost]
+    // [Authorize]
+    // public async Task<ActionResult<AbsenceDto>> CreateAbsence(CreateAbsenceDto createDto)
+    // {
+    //     // Sprawdź, czy użytkownik istnieje
+    //     var user = await _context.Users.FindAsync(createDto.UserId);
+    //     if (user == null)
+    //     {
+    //         return BadRequest("Użytkownik nie istnieje.");
+    //     }
+    //
+    //     var absence = new Absence
+    //     {
+    //         Day = createDto.Day,
+    //         UserId = createDto.UserId
+    //     };
+    //
+    //     _context.Absences.Add(absence);
+    //     await _context.SaveChangesAsync();
+    //
+    //     var absenceDto = new AbsenceDto
+    //     {
+    //         Id = absence.Id,
+    //         Day = absence.Day,
+    //         UserId = absence.UserId,
+    //         UserName = $"{user.FirstName} {user.LastName}"
+    //     };
+    //
+    //     return CreatedAtAction(nameof(GetAbsence), new { id = absence.Id }, absenceDto);
+    // }
+    
     // POST: api/Absence
     [HttpPost]
     [Authorize]
@@ -76,24 +108,52 @@ public class AbsenceController : ControllerBase
             return BadRequest("Użytkownik nie istnieje.");
         }
 
-        var absence = new Absence
+        // Rozpocznij transakcję, aby zapewnić spójność danych
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-            Day = createDto.Day,
-            UserId = createDto.UserId
-        };
+            try 
+            {
+                // Utwórz nieobecność
+                var absence = new Absence
+                {
+                    Day = createDto.Day,
+                    UserId = createDto.UserId
+                };
 
-        _context.Absences.Add(absence);
-        await _context.SaveChangesAsync();
+                _context.Absences.Add(absence);
 
-        var absenceDto = new AbsenceDto
-        {
-            Id = absence.Id,
-            Day = absence.Day,
-            UserId = absence.UserId,
-            UserName = $"{user.FirstName} {user.LastName}"
-        };
+                // Znajdź i anuluj rezerwacje dla tego dnia i dla tego doktora
+                var reservationsToCancel = await _context.Reservations
+                    .Where(r => r.DoctorId == createDto.UserId && r.Date == createDto.Day)
+                    .ToListAsync();
 
-        return CreatedAtAction(nameof(GetAbsence), new { id = absence.Id }, absenceDto);
+                foreach (var reservation in reservationsToCancel)
+                {
+                    reservation.IsCanceled = true;
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Zatwierdź transakcję
+                await transaction.CommitAsync();
+
+                var absenceDto = new AbsenceDto
+                {
+                    Id = absence.Id,
+                    Day = absence.Day,
+                    UserId = absence.UserId,
+                    UserName = $"{user.FirstName} {user.LastName}"
+                };
+
+                return CreatedAtAction(nameof(GetAbsence), new { id = absence.Id }, absenceDto);
+            }
+            catch (Exception ex)
+            {
+                // W razie błędu - wycofaj transakcję
+                await transaction.RollbackAsync();
+                return StatusCode(500, $"Błąd podczas tworzenia nieobecności: {ex.Message}");
+            }
+        }
     }
 
     // PUT: api/Absence/{id}
