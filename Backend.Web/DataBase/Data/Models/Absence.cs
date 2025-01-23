@@ -11,8 +11,7 @@ public class Absence
 
     [Required]
     public string Day { get; set; }
-
-    // Relacja do użytkownika
+    
     [Required]
     public int UserId { get; set; }
     [ForeignKey(nameof(UserId))]

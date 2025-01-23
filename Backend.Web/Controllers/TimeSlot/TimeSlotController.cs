@@ -76,7 +76,6 @@ public class TimeSlotController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TimeSlot>> CreateTimeSlot(CreateTimeSlotDto createDto)
     {
-        // Sprawdzenie, czy slot już istnieje
         var existingSlot = await _context.TimeSlots
             .FirstOrDefaultAsync(slot =>
                 slot.Date == createDto.Date &&

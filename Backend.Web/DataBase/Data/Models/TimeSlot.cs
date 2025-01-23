@@ -23,8 +23,7 @@ public class TimeSlot
 
     [Required]
     public bool IsPast { get; set; }
-
-    // Relacja do rezerwacji
+    
     public int? ReservationId { get; set; }
     [ForeignKey(nameof(ReservationId))]
     public Reservation? Reservation { get; set; }

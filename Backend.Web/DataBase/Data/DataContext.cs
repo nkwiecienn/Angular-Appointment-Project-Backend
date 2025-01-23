@@ -7,7 +7,7 @@ public class DataContext : DbContext
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-    // DbSety reprezentujące tabele w bazie danych
+    
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Reservation> Reservations { get; set; } = null!;
     public DbSet<Absence> Absences { get; set; } = null!;
@@ -18,7 +18,7 @@ public class DataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Konfiguracja tabeli User
+        
         modelBuilder.Entity<User>()
             .HasMany(u => u.Reservations)
             .WithOne(r => r.User)
@@ -37,7 +37,7 @@ public class DataContext : DbContext
             .HasForeignKey(av => av.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Konfiguracja tabeli Reservation
+        
         modelBuilder.Entity<Reservation>()
             .Property(r => r.Type)
             .IsRequired()
@@ -54,7 +54,7 @@ public class DataContext : DbContext
             .HasForeignKey(r => r.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Konfiguracja tabeli Availability
+        
         modelBuilder.Entity<Availability>()
             .Property(a => a.Type)
             .IsRequired()
@@ -68,7 +68,7 @@ public class DataContext : DbContext
             .Property(a => a.DaysOfWeek)
             .HasColumnType("json");
 
-        // Konfiguracja tabeli TimeSlot
+        
         modelBuilder.Entity<TimeSlot>()
             .HasOne(ts => ts.Reservation)
             .WithMany()

@@ -30,7 +30,6 @@ public class AvailabilityController : ControllerBase
 
         var result = availabilities.Select(a =>
         {
-            // Tworzenie DTO dla typu single-day lub range
             return new AvailabilityDto
             {
                 Id = a.Id,
@@ -67,8 +66,7 @@ public class AvailabilityController : ControllerBase
         {
             return NotFound();
         }
-
-        // Tworzenie DTO dla typu single-day lub range
+        
         var result = new AvailabilityDto
         {
             Id = availability.Id,

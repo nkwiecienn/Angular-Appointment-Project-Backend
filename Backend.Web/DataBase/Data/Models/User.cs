@@ -23,8 +23,7 @@ public class User
     
     [Required]
     public required int Role { get; set; }
-
-    // Relacje
+    
     public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     public ICollection<Absence> Absences { get; set; } = new List<Absence>();
     public ICollection<Availability> Availabilities { get; set; } = new List<Availability>();

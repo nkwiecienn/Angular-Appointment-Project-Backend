@@ -55,7 +55,6 @@ public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetUserAvailabilit
             }
             catch (Exception ex)
             {
-                // Tutaj możesz dodać logowanie błędu
                 Console.WriteLine($"Error processing availability {a.Id}: {ex.Message}");
                 return null;
             }
@@ -67,7 +66,6 @@ public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetUserAvailabilit
     }
     catch (Exception ex)
     {
-        // Tutaj możesz dodać logowanie błędu
         Console.WriteLine($"Error in GetUserAvailabilities: {ex.Message}");
         return StatusCode(500, "An error occurred while processing your request.");
     }
@@ -85,7 +83,7 @@ public async Task<ActionResult<IEnumerable<AbsenceDto>>> GetUserAbsences(int id)
 
     var absences = await _context.Absences
         .Where(a => a.UserId == id)
-        .Include(a => a.User) // Include the User entity
+        .Include(a => a.User)
         .ToListAsync();
 
     var result = absences.Select(a => new AbsenceDto

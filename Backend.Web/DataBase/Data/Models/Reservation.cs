@@ -22,10 +22,10 @@ public class Reservation
     public int Length { get; set; }
 
     [Required]
-    public required string Type { get; set; } // "konsultacja", "badanie", etc.
+    public required string Type { get; set; } 
 
     [Required]
-    public required string Gender { get; set; } // 'kobieta', 'mężczyzna', `inny`
+    public required string Gender { get; set; } 
 
     [Required]
     public int Age { get; set; }
@@ -37,8 +37,7 @@ public class Reservation
 
     [Required]
     public bool IsReserved { get; set; }
-
-    // Relacja do użytkownika
+    
     [Required]
     public int UserId { get; set; }
     [ForeignKey(nameof(UserId))]

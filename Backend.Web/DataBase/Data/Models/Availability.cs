@@ -10,16 +10,15 @@ public class Availability
     public int Id { get; set; }
 
     [Required]
-    public required string Type { get; set; } // "single-day" | "range"
+    public required string Type { get; set; } 
 
     public string? Day { get; set; }
     public string? DateFrom { get; set; }
     public string? DateTo { get; set; }
-    public string? DaysOfWeek { get; set; } // Przechowywane jako string (np. "1,2,3")
+    public string? DaysOfWeek { get; set; } 
 
-    public string? TimeRanges { get; set; } // JSON string do przechowywania zakresów czasowych
-
-    // Relacja do użytkownika
+    public string? TimeRanges { get; set; } 
+    
     [Required]
     public int UserId { get; set; }
     [ForeignKey(nameof(UserId))]
