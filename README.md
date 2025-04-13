@@ -1,5 +1,3 @@
-# Back-end Template
-
 # Run
 - Install Docker, Rider, and .NET SDK
 - Run `docker-compose up` in the root directory
